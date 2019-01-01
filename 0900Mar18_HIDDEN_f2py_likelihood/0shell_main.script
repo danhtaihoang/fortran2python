@@ -1,0 +1,164 @@
+#!/bin/sh
+#===============================================================================
+# step:
+echo "1 to run spin"
+echo "11 to run all spin in Biowulf"
+echo "21 to cat cost (number of hidden)"
+echo "22 to cat MSEfinal"
+echo "23 to cat time"
+
+echo "31 to run 3correlation.f90"
+echo "32 to cat MSE and slope of Cij"
+
+echo -n "type step: "
+read step_number
+
+#===============================================================================
+if [ $step_number -le 1 ] || [ $step_number -eq 11 ]
+then
+rm *.dat
+rm -r W
+rm -r cost
+rm -r Wfinal
+
+mkdir W
+mkdir cost
+mkdir Wfinal
+
+#rm fortran_lib.so
+#f2py -c -m fortran_lib 10fortran_lib.f90
+
+rm swarmfile.txt
+file="swarmfile.txt"
+
+fi
+
+#-----------------------------------
+if [ $step_number -eq 31 ]
+then
+rm -r C
+mkdir C
+fi
+#===============================================================================
+#cat W:
+if [ $step_number -gt 20 ]
+then
+rm *.o
+rm *.e
+fi
+
+#===============================================================================
+# parameter: 
+for g in 2.0
+do
+echo "g: $g"
+
+for na0 in 20
+do
+echo "na0: $na0"
+na00=$(printf "%03d" $na0)
+
+#for fh in 1.0 2.0 4.0
+#do
+#nh=$(echo "scale=0; $fh*$na0" | bc)
+for nh in 6
+do
+nh=${nh%.*}
+nh0=$(printf "%02d" $nh)
+fh0=$(printf "%.2f" $fh)
+
+#for fb in $fh
+#for nb in 0 1 2 3 4 5 6 
+#for (( i=1; i <= 11; i++ ))
+#do
+#fb=$(echo "scale=4; $fh-0.1+($i-1)*0.02" | bc)
+#nb=$(echo "scale=0; $fb*$na0" | bc)
+for nb in 0 2 4 6 8 10
+#for nb in 0 4 6 8 10 12 14 16 18 20 22 24 26 28 30
+#for nb in 0
+do
+nb=${nb%.*}
+nb0=$(printf "%02d" $nb)
+
+for ln2 in 4.0
+do
+#ns=$(echo "scale=0; $ln*$na0" | bc)
+#ns=${ns%.*}
+#echo "ns: $ns"
+#ns0=$(printf "%08d" $ns)
+ln20=$(printf "%.2f" $ln2)
+
+for nens in 1
+do
+nens0=$(printf "%02d" $nens)
+
+#let na=$na0-$nh
+
+#=========================================================================================
+#run program all spin:
+if [ $step_number -eq 1 ]
+then
+echo "running MAIN"
+python 1main.py $g $na0 $nh $nb $ln2 $nens &
+fi
+#=========================================================================================
+#run program all spin in Biowulf:
+if [ $step_number -eq 11 ]
+then
+#for (( i=1; i <= $na; i++ ))
+#do
+echo "running MAIN"
+echo "python 1main.py $g $na0 $nh $nb $ln2 $nens"  >> $file
+#done
+fi
+#=========================================================================================
+#cat MSE vs ns:
+if [ $step_number -eq 21 ]
+then
+#cat MSE/MSE_g${g}_nh${nh0}_ln${ln0}.dat >> MSE_fv${fv}.dat 
+#cat MSE/MSE_g${g}_nh${nh0}_ln${ln0}.dat >> fo_MSE_ln${ln0}.dat
+#if [ $nb -eq $nh ]  
+#then
+cat cost/cost_${nh0}_${nb0}_${ln20}.dat >> cost_${nh0}_${ln20}.dat 
+#fi
+#cat cost/number_hidden_g${g}_nh${nh0}_nb${nb0}_ln${ln0}.dat >> number_hidden_nh${nh0}_ln${ln0}.dat 
+fi
+
+if [ $step_number -eq 22 ]
+then
+cat Wfinal/MSEfinal_${na0}_${nh0}_${nb0}_${ln20}.dat >> MSEfinal_${na0}_${nh0}.dat 
+fi
+
+if [ $step_number -eq 23 ]
+then
+cat W/time_${na0}_${nh0}_${nb0}_${ln20}.dat >> time_${na0}_${nh0}.dat 
+fi
+
+#---------------------------------------------------
+# run correlation
+if [ $step_number -eq 31 ]
+then
+echo "running correlation"
+./corre_run $na0 $g $nh $nb $ln2 &
+fi
+
+#cat MSE and slope of Cij:
+if [ $step_number -eq 32 ]
+then
+cat MSE_slope_${nb0}.dat >> MSE_slope.dat 
+fi
+
+done
+done
+done
+done
+done
+done
+
+#=========================================================================================
+# submit to Biowulf:
+if [ $step_number -eq 11 ]
+then
+swarm -f swarmfile.txt -t 1 -g 4.0 --time=10-00:00:00 --partition norm
+fi
+

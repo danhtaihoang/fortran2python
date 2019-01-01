@@ -1,0 +1,58 @@
+set terminal postscript eps size 20cm,20cm enhanced color font 'Helvetica,10'
+set autoscale
+set style line 1 lt 1 pt 7 lw 2 lc rgb 'black'
+set style line 2 lt 2 pt 5 lw 2 lc rgb 'blue'
+set style line 3 lt 3 pt 13 lw 2 lc rgb 'magenta'
+set style line 4 lt 1 pt 9 lw 2 lc rgb 'red'
+set style line 5 lt 1 pt 11 lw 2 lc rgb 'orange'
+set style line 6 lt 1 pt 65 lw 2 lc rgb 'black'
+set style line 7 lt 2 pt 64 lw 2 lc rgb 'blue'
+set style line 8 lt 3 pt 68 lw 2 lc rgb 'magenta'
+set style line 9 lt 1 pt 66 lw 2 lc rgb 'red'
+set style line 10 lt 1 pt 67 lw 2 lc rgb 'orange'
+set style line 11 lt 1 pt 7 dt 3 lw 2 lc rgb 'black'
+set style line 12 lt 2 pt 5 dt 3 lw 2 lc rgb 'blue'
+set style line 13 lt 3 pt 13 dt 3 lw 2 lc rgb 'magenta'
+set style line 14 lt 1 pt 9 dt 3 lw 2 lc rgb 'red'
+set style line 15 lt 1 pt 11 dt 3 lw 2 lc rgb 'orange'
+set style line 16 lt 1 pt 54 dt 3 lw 2 lc rgb 'black'
+set style line 17 lt 2 pt 64 dt 3 lw 2 lc rgb 'blue'
+set style line 18 lt 3 pt 68 dt 3 lw 2 lc rgb 'magenta'
+set style line 19 lt 1 pt 66 dt 3 lw 2 lc rgb 'red'
+set style line 20 lt 1 pt 67 dt 3 lw 2 lc rgb 'orange'
+set output 'log-likelihood.eps'
+set multiplot
+set pointsize 0.4
+set xlabel 'iteration' offset 0,0
+set ylabel 'log likelihood' offset 2,0
+set lmargin at screen 0.05000
+set rmargin at screen 0.21000
+set bmargin at screen 0.79455
+set tmargin at screen 0.94000
+plot 'cost/cost_20_06_00_01.dat' u 1:6 w p t 'nb=0' ls 6,\
+'cost/cost_20_06_02_01.dat' u 1:6 w l t '2' ls 1,\
+'cost/cost_20_06_04_01.dat' u 1:6 w l t '4' ls 2,\
+'cost/cost_20_06_06_01.dat' u 1:6 w l t '6' ls 3,\
+'cost/cost_20_06_08_01.dat' u 1:6 w l t '8' ls 4,\
+'cost/cost_20_06_10_01.dat' u 1:6 w l t '10' ls 5
+set lmargin at screen 0.27000
+set rmargin at screen 0.43000
+set bmargin at screen 0.79455
+set tmargin at screen 0.94000
+set lmargin at screen 0.49000
+set rmargin at screen 0.65000
+set bmargin at screen 0.79455
+set tmargin at screen 0.94000
+set lmargin at screen 0.05000
+set rmargin at screen 0.21000
+set bmargin at screen 0.58909
+set tmargin at screen 0.73455
+set lmargin at screen 0.27000
+set rmargin at screen 0.43000
+set bmargin at screen 0.58909
+set tmargin at screen 0.73455
+set lmargin at screen 0.49000
+set rmargin at screen 0.65000
+set bmargin at screen 0.58909
+set tmargin at screen 0.73455
+unset multiplot

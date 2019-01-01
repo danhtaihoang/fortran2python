@@ -1,0 +1,3 @@
+#!/bin/bash
+rm fortran_lib.so
+f2py -c -m fortran_lib 10fortran_lib.f90
